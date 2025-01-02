@@ -1,20 +1,36 @@
 package com.peiwen.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.peiwen.context.MyFancyPdfInvoicesApplicationConfiguration;
 import com.peiwen.model.Invoice;
 import com.peiwen.service.InvoiceService;
+import com.peiwen.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.IOException;
 import java.util.List;
 
-import static com.peiwen.context.Application.invoiceService;
-import static com.peiwen.context.Application.objectMapper;
-
 public class MyFancyPdfInvoiceServlet extends HttpServlet {
+
+    private UserService userService;
+    private InvoiceService invoiceService;
+    private ObjectMapper objectMapper;
+
+    @Override
+    public void init() throws ServletException {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MyFancyPdfInvoicesApplicationConfiguration.class);
+
+        context.registerShutdownHook();
+
+        this.userService = context.getBean(UserService.class);
+        this.invoiceService = context.getBean(InvoiceService.class);
+        this.objectMapper = context.getBean(ObjectMapper.class);
+
+    }
 
 
     @Override
